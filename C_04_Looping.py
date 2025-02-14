@@ -1,6 +1,7 @@
 
 # Initialise ticket numbers
-MAX_TICKETS = tickets_sold = 0
+MAX_TICKETS = 5
+tickets_sold = 0
 
 while tickets_sold < MAX_TICKETS:
     name = input("Name: ")
