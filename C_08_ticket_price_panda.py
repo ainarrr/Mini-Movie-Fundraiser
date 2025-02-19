@@ -1,3 +1,6 @@
+import pandas
+
+
 # Functions go here
 def int_check(question):
     """Checks users enter integer"""
@@ -56,10 +59,34 @@ def string_check(question, valid_answers=('yes', 'no'),
         print(f"Please choose ab option from {valid_answers}")
 
 
+# currency formatting function
+def currency(x):
+    return "${:.2f}".format(x)
+
+
 # Main routine goes here
 
 # Initialise variables / non-default options for string checker
 payment_ans = ('cash', 'credit')
+
+# Ticket Price list
+CHILD_PRICE = 7.50
+ADULT_PRICE = 10.50
+SENIOR_PRICE = 6.50
+
+# Credit card surcharge
+CREDIT_SURCHARGE = 0.05
+
+# lists to hold ticket details
+all_names = []
+all_tickets_costs = []
+all_surcharges = []
+
+mini_movie_dict = {
+    'Name': all_names,
+    'Ticket Price': all_tickets_costs,
+    'Surcharge': all_surcharges
+}
 
 # loop for testing purposes...
 while True:
@@ -67,6 +94,8 @@ while True:
 
     # ask use for their name ( and check it's not blank)
     name = not_blank("Name: ")
+    if name == "xxx":
+        break
 
     # Ask for their age and check it's between 12 and 120
     age = int_check("Age: ")
@@ -75,12 +104,57 @@ while True:
     if age < 12:
         print(f"{name} is too young")
         continue
-    elif age > 120:
+
+    # Child ticket price $7.50
+    elif age < 16:
+        ticket_price = CHILD_PRICE
+
+    # Adult ticket ($10.50)
+    elif age < 65:
+        ticket_price = ADULT_PRICE
+
+    # Senior Citizen ticket ($6.50)
+    elif age < 121:
+        ticket_price = SENIOR_PRICE
+
+    else:
         print(f"{name} it too old")
         continue
-    else:
-        pass
 
     # ask user for payment method ( cash / credit / ca / cr)
     pay_method = string_check("Payment method: ", payment_ans, 2)
-    print(f"{name} has bought a ticket ({pay_method})")
+
+    if pay_method == "cash":
+        surcharge = 0
+
+    # if paying by credit, calculate surcharge
+    else:
+        surcharge = ticket_price * CREDIT_SURCHARGE
+
+    # add name, ticket cost and surcharge to
+    all_names.append(name)
+    all_tickets_costs.append(ticket_price)
+    all_surcharges.append(surcharge)
+
+# create dataframe / table from dictionary
+mini_movie_frame = pandas.DataFrame(mini_movie_dict)
+
+# calculate the total payable for each ticket
+mini_movie_frame['Total'] = mini_movie_frame['Ticket Price'] + mini_movie_frame['Surcharge']
+mini_movie_frame['Profit'] = mini_movie_frame['Ticket Price'] - 5
+
+# Work out total paid and total profit...
+total_paid = mini_movie_frame['Total'].sum()
+total_profit = mini_movie_frame['Profit'].sum()
+
+# Currency formatting (uses currency function)
+add_dollars = ['Ticket Price', 'Surcharge', 'Total', 'Profit']
+for var_item in add_dollars:
+    mini_movie_frame[var_item] = mini_movie_frame[var_item].apply(currency)
+
+# Output movie fram without index
+print(mini_movie_frame.to_string(index=False))
+
+print()
+print(f"Total Paid: ${total_paid:.2f}")
+print(f"Total Profit: ${total_profit:.2f}")

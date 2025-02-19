@@ -62,22 +62,28 @@ def not_blank(question):
 
 
 def int_check(question):
-    """Checks user enter an integer"""
+    """Checks users enter integer )"""
 
-    error = "oops - please enter an integer."
+    error = "Oops - please enter an integer more than zero"
 
     while True:
+        response = input(question).lower()
 
-        try:
-            # Return the response if it's an integer
-            response = int(input(question))
-
+        # check for the exit code
+        if response == "exit_code":
             return response
 
+        try:
+            # Change the response to an integer and check that it's more than zero
+            response = int(response)
+
+            if response > 0:
+                return response
+
+            else:
+                print(error)
         except ValueError:
             print(error)
-
-
 
 
 # Main Routine goes here
@@ -85,6 +91,8 @@ def int_check(question):
 # Initialise ticket numbers
 MAX_TICKETS = 5
 tickets_sold = 0
+
+payment_ans = ('cash', 'credit')
 
 make_statement("Mini-Movie Fundraiser Program", "🍿")
 
@@ -108,10 +116,10 @@ while tickets_sold < MAX_TICKETS:
 
     # Output error message / success message
     if age < 12:
-        print(f"{name} is too young")
+        print("Sorry you are too young for this movie")
         continue
-    elif age> 120:
-        print(f"{name} it too old")
+    elif age > 120:
+        print("You are too old")
         continue
     else:
         pass
@@ -119,7 +127,7 @@ while tickets_sold < MAX_TICKETS:
     # ask user for payment method ( cash / credit / ca / cr)
     pay_method = string_check("Payment method: ", payment_ans, 2)
     print(f"{name} has bought a ticket ({pay_method})")
-    
+
     tickets_sold += 1
 
 if tickets_sold == MAX_TICKETS:
