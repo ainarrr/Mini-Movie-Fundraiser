@@ -1,3 +1,6 @@
+import pandas
+
+
 # Functions go here
 def make_statement(statement, decoration):
     """"Emphasises headings by adding decoration
@@ -86,13 +89,35 @@ def int_check(question):
             print(error)
 
 
+def currency(x):
+    return "${:.2f}".format(x)
+
+
 # Main Routine goes here
 
-# Initialise ticket numbers
+# Initialise ticket numberss
 MAX_TICKETS = 5
 tickets_sold = 0
-
+# initialise variables / non-default option
 payment_ans = ('cash', 'credit')
+# Ticket Price list
+CHILD_PRICE = 7.50
+ADULT_PRICE = 10.50
+SENIOR_PRICE = 6.50
+
+# Credit card surcharge
+CREDIT_SURCHARGE = 0.05
+
+# lists to hold ticket details
+all_names = []
+all_tickets_costs = []
+all_surcharges = []
+
+mini_movie_dict = {
+    'Name': all_names,
+    'Ticket Price': all_tickets_costs,
+    'Surcharge': all_surcharges
+}
 
 make_statement("Mini-Movie Fundraiser Program", "🍿")
 
