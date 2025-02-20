@@ -95,7 +95,7 @@ def currency(x):
 
 # Main Routine goes here
 
-# Initialise ticket numberss
+# Initialise ticket numbers
 MAX_TICKETS = 5
 tickets_sold = 0
 # initialise variables / non-default option
@@ -119,6 +119,7 @@ mini_movie_dict = {
     'Surcharge': all_surcharges
 }
 
+# Program main heading
 make_statement("Mini-Movie Fundraiser Program", "🍿")
 
 print()
@@ -129,6 +130,7 @@ if want_instructions == "yes":
 
 print()
 
+# loop to get name, age and payment detail
 while tickets_sold < MAX_TICKETS:
     # ask use for their name ( and check it's not blank)
     name = not_blank("Name: ")
@@ -141,20 +143,65 @@ while tickets_sold < MAX_TICKETS:
 
     # Output error message / success message
     if age < 12:
-        print("Sorry you are too young for this movie")
+        print(f"{name} is too young")
         continue
-    elif age > 120:
-        print("You are too old")
-        continue
+
+    # Child ticket price $7.50
+    elif age < 16:
+        ticket_price = CHILD_PRICE
+
+    # Adult ticket ($10.50)
+    elif age < 65:
+        ticket_price = ADULT_PRICE
+
+    # Senior Citizen ticket ($6.50)
+    elif age < 121:
+        ticket_price = SENIOR_PRICE
+
     else:
-        pass
+        print(f"{name} it too old")
+        continue
 
     # ask user for payment method ( cash / credit / ca / cr)
     pay_method = string_check("Payment method: ", payment_ans, 2)
-    print(f"{name} has bought a ticket ({pay_method})")
+
+    if pay_method == "cash":
+        surcharge = 0
+
+    # if paying by credit, calculate surcharge
+    else:
+        surcharge = ticket_price * CREDIT_SURCHARGE
+
+    # add name, ticket cost and surcharge to
+    all_names.append(name)
+    all_tickets_costs.append(ticket_price)
+    all_surcharges.append(surcharge)
 
     tickets_sold += 1
+# create dataframe / table from dictionary
+mini_movie_frame = pandas.DataFrame(mini_movie_dict)
 
+# calculate the total payable for each ticket
+mini_movie_frame['Total'] = mini_movie_frame['Ticket Price'] + mini_movie_frame['Surcharge']
+mini_movie_frame['Profit'] = mini_movie_frame['Ticket Price'] - 5
+
+# Work out total paid and total profit...
+total_paid = mini_movie_frame['Total'].sum()
+total_profit = mini_movie_frame['Profit'].sum()
+
+# Currency formatting (uses currency function)
+add_dollars = ['Ticket Price', 'Surcharge', 'Total', 'Profit']
+for var_item in add_dollars:
+    mini_movie_frame[var_item] = mini_movie_frame[var_item].apply(currency)
+
+# Output movie fram without index
+print(mini_movie_frame.to_string(index=False))
+
+print()
+print(f"Total Paid: ${total_paid:.2f}")
+print(f"Total Profit: ${total_profit:.2f}")
+
+# End of ticket loop !
 if tickets_sold == MAX_TICKETS:
     print(f"You sold all the tickets ( ie: {MAX_TICKETS} tickets")
 else:
